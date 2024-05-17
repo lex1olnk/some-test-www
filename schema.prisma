@@ -1,0 +1,247 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model Author {
+  id    Int    @id @default(autoincrement())
+  value String
+  Book  Book[]
+}
+
+model Book {
+  id              Int            @id @default(autoincrement())
+  adult           Boolean
+  costChapter     Int
+  name            String
+  images          Image[]        @relation("book_image")
+  authorId        Int
+  author          Author?        @relation(fields: [authorId], references: [id])
+  createdById     Int
+  createdBy       User?          @relation(fields: [createdById], references: [id], name: "book_creator")
+  updatedById     Int
+  updatedBy       User?          @relation(fields: [updatedById], references: [id], name: "book_updater")
+  createdAt       DateTime       @default(now()) @map(name: "created_at")
+  updatedAt       DateTime       @updatedAt @map(name: "updated_at")
+  description     String
+  statusTranslate Original       @default(ONGOING)
+  originalName    String
+  translatorId    Int
+  translator      User?          @relation(fields: [translatorId], references: [id], name: "book_translator")
+  likes           Int
+  type            Type           @default(Japanese)
+  views           Int
+  year            Int
+  fandoms         Fandom[]
+  tags            Tag[]
+  genres          Genre[]
+  Subscription    Subscription[]
+  AdPurchase      AdPurchase[]
+  Rating          Rating[]
+  Chapter         Chapter[]
+}
+
+model Image {
+  id     Int    @id @default(autoincrement())
+  src    String
+  bookId Int
+  book   Book?  @relation(fields: [bookId], references: [id], name: "book_image")
+}
+
+model Fandom {
+  id    Int    @id @default(autoincrement())
+  name  String
+  books Book[]
+}
+
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String
+  books Book[]
+}
+
+model Genre {
+  id    Int    @id @default(autoincrement())
+  name  String
+  books Book[]
+}
+
+model User {
+  id                   Int                    @id @default(autoincrement())
+  name                 String?
+  email                String                 @unique
+  password             String
+  createdAt            DateTime               @default(now()) @map(name: "created_at")
+  updatedAt            DateTime               @updatedAt @map(name: "updated_at")
+  booksCreatedByMe     Book[]                 @relation("book_creator")
+  booksUpdatedByMe     Book[]                 @relation("book_updater")
+  booksTranslator      Book[]                 @relation("book_translator")
+  role                 Role                   @default(USER)
+  teamAdmin            Team[]                 @relation("team_admin")
+  complaints           Complaint[]
+  bans                 BanList[]
+  SubscriptionPurchase SubscriptionPurchase[]
+  AdPurchase           AdPurchase[]
+  Rating               Rating[]
+  Comment              Comment[]
+}
+
+model Volume {
+  id     Int    @id @default(autoincrement())
+  bookId Int
+  value  String
+
+  @@unique([bookId, value])
+}
+
+model Chapter {
+  id            Int        @id @default(autoincrement())
+  accessStatus  String
+  bookId        Int
+  discussionId  Int
+  chapterNumber Int        @default(0)
+  name          String
+  description   String
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @default(now())
+  createdBy     Int
+  updatedBy     Int?
+  chapterStatus String     @default("progress")
+  costChapter   Int        @default(0)
+  costAudio     Int        @default(0)
+  content       String?
+  views         Int        @default(0)
+  likes         Int        @default(0)
+  downloaded    Int        @default(0)
+  Book          Book       @relation(fields: [bookId], references: [id])
+  Discussion    Discussion @relation(fields: [discussionId], references: [id])
+}
+
+model Comment {
+  id           Int        @id @default(autoincrement())
+  userId       Int
+  text         String
+  parentId     Int?
+  likes        Int        @default(0)
+  dislikes     Int        @default(0)
+  createdAt    DateTime   @default(now())
+  spoiler      Boolean    @default(false)
+  discussionId Int
+  discussion   Discussion @relation(fields: [discussionId], references: [id])
+  User         User       @relation(fields: [userId], references: [id])
+}
+
+model Discussion {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  Chapters Chapter[]
+  Comment  Comment[]
+}
+
+model Rating {
+  id     Int  @id @default(autoincrement())
+  rating Int
+  book   Book @relation(fields: [bookId], references: [id])
+  bookId Int
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  @@unique([bookId, userId])
+}
+
+model Team {
+  id      Int    @id @default(autoincrement())
+  name    String
+  img     String
+  likes   Int
+  adminId Int
+  admin   User?  @relation(fields: [adminId], references: [id], name: "team_admin")
+}
+
+model Subscription {
+  id        Int                    @id @default(autoincrement())
+  type      String
+  cost      Float
+  bookId    Int
+  book      Book                   @relation(fields: [bookId], references: [id])
+  purchases SubscriptionPurchase[]
+}
+
+model SubscriptionPurchase {
+  id             Int          @id @default(autoincrement())
+  subscriptionId Int
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+  userId         Int
+  user           User         @relation(fields: [userId], references: [id])
+  createdAt      DateTime     @default(now()) @map(name: "created_at")
+  duration       Int // Продолжительность подписки в днях
+  endDate        DateTime // Дата окончания подписки
+  isActive       Boolean      @default(true) // Статус активности подписки
+}
+
+model AdPurchase {
+  id        Int      @id @default(autoincrement())
+  bookId    Int
+  book      Book     @relation(fields: [bookId], references: [id])
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  startDate DateTime
+  endDate   DateTime
+  createdAt DateTime @default(now()) @map(name: "created_at")
+}
+
+model Complaint {
+  id          Int             @id @default(autoincrement())
+  description String
+  status      ComplaintStatus @default(PENDING)
+  userId      Int
+  user        User            @relation(fields: [userId], references: [id])
+  createdAt   DateTime        @default(now()) @map(name: "created_at")
+}
+
+model BanList {
+  id        Int       @id @default(autoincrement())
+  reason    String
+  status    BanStatus @default(PENDING)
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now()) @map(name: "created_at")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Original {
+  ONGOING
+  FREEZED
+}
+
+enum Type {
+  Japanese
+  Authors
+  Chinese
+  Korean
+}
+
+enum ComplaintStatus {
+  PENDING
+  RESOLVED
+  DISMISSED
+}
+
+enum BanStatus {
+  PENDING
+  JUSTIFIED
+  UNJUSTIFIED
+}
