@@ -4,6 +4,9 @@ const faker = require("faker");
 const prisma = new PrismaClient();
 
 const createFakeChapter = async (bookId) => {
+  const users = await prisma.user.findMany();
+  const userIds = users.map((user) => user.id);
+
   const fakeChapter = {
     accessStatus: faker.random.arrayElement(["public", "private", "premium"]),
     bookId: bookId,
@@ -13,8 +16,8 @@ const createFakeChapter = async (bookId) => {
     description: faker.lorem.paragraph(),
     createdAt: faker.date.recent(),
     updatedAt: faker.date.recent(),
-    createdBy: faker.name.findName(),
-    updatedBy: faker.name.findName(),
+    createdBy: userIds[0],
+    updatedBy: userIds[0],
     chapterStatus: faker.random.arrayElement(["progress", "complete"]),
     costChapter: faker.finance.amount(),
     costAudio: faker.finance.amount(),
