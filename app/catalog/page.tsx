@@ -2,6 +2,7 @@ import { Filter } from "@/components/Catalog/Filter";
 import { Title } from "@/components/ui/Title";
 import db from "@/lib/prisma";
 import { Genre } from "@prisma/client";
+import { Suspense } from "react";
 
 const getFilterData = async () => {
   const genres = await db.genre.findMany();
@@ -50,7 +51,9 @@ export default async function Page({
         <div>SearchInput</div>
         {books && books.map((book) => <div key={book.id}>{book.name}</div>)}
       </div>
-      <Filter genres={genres} fandoms={fandoms} tags={tags} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Filter genres={genres} fandoms={fandoms} tags={tags} />
+      </Suspense>
     </div>
   );
 }
