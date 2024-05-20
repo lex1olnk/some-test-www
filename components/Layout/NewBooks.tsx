@@ -1,4 +1,4 @@
-import { ComponentName } from "../ComponentName";
+import { Title } from "../ui/Title";
 import db from "@/lib/prisma";
 import { Card } from "../ui/Card";
 
@@ -8,7 +8,7 @@ const getNewBooks = async () => {
     orderBy: {
       updatedAt: "desc",
     },
-    take: 5,
+    take: 7,
   });
 
   return books;
@@ -19,11 +19,11 @@ export const NewBooks = async () => {
 
   return (
     <div className="">
-      <ComponentName title={"Новинки"} />
+      <Title>Новинки</Title>
 
-      <div className="bg-white flex flex-row h-[197px]">
+      <div className="bg-white flex flex-row h-[197px] overflow-hidden">
         {books.map((book) => (
-          <Card title={book.name} key={book.id + book.name} />
+          <Card title={book.name} key={book.id + book.name} bookId={book.id} />
         ))}
       </div>
     </div>

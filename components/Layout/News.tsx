@@ -18,7 +18,7 @@ export const News = () => {
   ];
 
   return (
-    <div>
+    <div className="w-full bg-white">
       {someInteresting.map((a) => (
         <div key={a.date}>
           <p>{a.text}</p>

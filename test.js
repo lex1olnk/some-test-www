@@ -1,5 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const faker = require("faker");
+const { connect } = require("http2");
 
 const prisma = new PrismaClient();
 
@@ -7,10 +8,15 @@ const createFakeChapter = async (bookId) => {
   const users = await prisma.user.findMany();
   const userIds = users.map((user) => user.id);
 
+  const fakeDiscussion = {
+    createdAt: faker.date.recent(),
+    updatedAt: faker.date.recent(),
+  };
+
+  const disc = await prisma.discussion.create({ data: fakeDiscussion });
+
   const fakeChapter = {
     accessStatus: faker.random.arrayElement(["public", "private", "premium"]),
-    bookId: bookId,
-    discussionId: null, // Заглушка, пока не создано обсуждение
     chapterNumber: faker.datatype.number(),
     name: faker.lorem.words(3),
     description: faker.lorem.paragraph(),
@@ -19,25 +25,21 @@ const createFakeChapter = async (bookId) => {
     createdBy: userIds[0],
     updatedBy: userIds[0],
     chapterStatus: faker.random.arrayElement(["progress", "complete"]),
-    costChapter: faker.finance.amount(),
-    costAudio: faker.finance.amount(),
+    costChapter: 0,
+    costAudio: 0,
     content: faker.lorem.paragraphs(3),
     views: faker.datatype.number(),
     likes: faker.datatype.number(),
     downloaded: faker.datatype.number(),
-  };
-
-  const createdChapter = await prisma.chapter.create({ data: fakeChapter });
-
-  const fakeDiscussion = {
-    createdAt: faker.date.recent(),
-    updatedAt: faker.date.recent(),
-    Chapters: {
-      connect: { id: createdChapter.id }, // Связываем созданную главу с обсуждением
+    Book: {
+      connect: { id: bookId },
+    },
+    Discussion: {
+      connect: { id: disc.id },
     },
   };
 
-  await prisma.discussion.create({ data: fakeDiscussion });
+  await prisma.chapter.create({ data: fakeChapter });
 };
 
 const addDiscussionToExistingBooks = async () => {

@@ -1,0 +1,14 @@
+.head {
+  top: 227px;
+  @apply relative flex z-20 h-[258px] bg-white;
+}
+
+.head > div {
+  flex: 1 1;
+}
+
+.head .bookImage {
+  top: -227px;
+  flex: 0 0 261px;
+  @apply relative;
+}

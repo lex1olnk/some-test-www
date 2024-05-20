@@ -15,7 +15,7 @@ const getAdvertismentBooks = async () => {
     include: {
       book: true,
     },
-    take: 5,
+    take: 7,
   });
 
   return books;
@@ -25,10 +25,10 @@ export const AdvertismentCarousel = async () => {
   const books = await getAdvertismentBooks();
 
   return (
-    <div className="h-[300px] w-screen">
-      <div className="max-w-7xl mx-auto h-full flex flex-wrap mx-auto">
+    <div className="h-[300px] bg-white">
+      <div className="max-w-7xl h-full flex mx-auto overflow-hidden">
         {books.map((book) => (
-          <Card key={book.book.id} title={book.book.name} />
+          <Card key={book.book.id} title={book.book.name} bookId={book.id} />
         ))}
       </div>
     </div>

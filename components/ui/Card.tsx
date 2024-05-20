@@ -1,8 +1,10 @@
 import classNames from "classnames";
+import Link from "next/link";
 import { DetailedHTMLProps, HTMLAttributes } from "react";
 
 interface CardProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+  bookId: number;
   title?: string;
   showRating?: boolean;
   rating?: number;
@@ -15,6 +17,7 @@ const hideText = (text: string, maxlimit: number) => {
 };
 
 export const Card = ({
+  bookId,
   title,
   showRating = false,
   rating,
@@ -23,8 +26,10 @@ export const Card = ({
   const text = title && hideText(title, 22);
 
   return (
-    <div className=" h-full aspect-[0.69318181818] py-2 px-1 first:ml-1 last:mr-1">
-      {text && <div className="bg-slate-300 h-full">{text}</div>}
-    </div>
+    <Link href={`/book/${bookId}`}>
+      <div className=" h-full aspect-[0.69318181818] py-2 px-1 first:ml-1 last:mr-1">
+        {text && <div className="bg-slate-300 h-full">{text}</div>}
+      </div>
+    </Link>
   );
 };
