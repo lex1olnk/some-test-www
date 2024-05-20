@@ -7,7 +7,7 @@ type BookProps = {
   book: Book;
 };
 
-export const BookHead = async ({ book }: BookProps) => {
+export const BookHead = async ({ book }: any) => {
   const rating = book?.Rating.length
     ? book?.Rating.reduce((accumulator: number, item: Rating) => {
         return accumulator + item.rating;

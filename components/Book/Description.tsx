@@ -20,7 +20,7 @@ const ShowItems = ({
   );
 };
 
-export const Description = ({ book }: { book: Book }) => {
+export const Description = ({ book }: any) => {
   return (
     <>
       <p>Описание</p>
@@ -53,7 +53,7 @@ export const Description = ({ book }: { book: Book }) => {
           {" "}
           <p>Другие работы переводчика</p>
           <div className="h-60 flex flex-row">
-            {book.translator?.booksCreatedByMe.map((item) => (
+            {book.translator?.booksCreatedByMe.map((item: any) => (
               <Card
                 key={item.name + item.id}
                 bookId={item.id}

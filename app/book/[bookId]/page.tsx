@@ -87,7 +87,7 @@ export default async function Page({
   const { headInfo, description, loaded, chapters } = await getBookInformation(
     params.bookId
   );
-  if (!loaded) {
+  if (!headInfo || !description || !chapters) {
     notFound();
   }
   console.log(chapters);

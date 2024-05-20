@@ -1,8 +1,8 @@
 import { Chapter } from "@prisma/client";
 import { Table } from "../ui/Table";
 
-export const Chapters = ({ chapters }: { chapters: Chapter[] }) => {
-  const newChapters = chapters.map((chapter) => {
+export const Chapters = ({ chapters }: any) => {
+  const newChapters = chapters.map((chapter: any) => {
     const date = new Date(chapter.updatedAt);
     return { ...chapter, updatedAt: date.toDateString() };
   });
