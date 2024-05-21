@@ -5,27 +5,54 @@ import { Genre } from "@prisma/client";
 import { Suspense } from "react";
 
 const getFilterData = async () => {
-  const genres = await db.genre.findMany();
-  const tags = await db.tag.findMany();
-  const fandoms = await db.fandom.findMany();
+  const genre = await db.genre.findMany();
+  const tag = await db.tag.findMany();
+  const fandom = await db.fandom.findMany();
 
-  return { genres, tags, fandoms };
+  return { genre, tag, fandom };
 };
 
-const getBooksByFilter = async (
-  genres: string[],
-  tags: string[],
-  fandoms: string[]
-) => {
+const getBooksByFilter = async ({
+  genres,
+  tags,
+  fandoms,
+}: {
+  genres: string[];
+  tags: string[];
+  fandoms: string[];
+}) => {
   const books = await db.book.findMany({
     where: {
-      genres: {
-        some: {
-          name: {
-            in: genres,
-          },
-        },
-      },
+      genres:
+        genres && genres.length
+          ? {
+              some: {
+                name: {
+                  in: genres,
+                },
+              },
+            }
+          : {}, // Пустое условие, если массив genres пустой
+      fandoms:
+        fandoms && fandoms.length
+          ? {
+              some: {
+                name: {
+                  in: fandoms,
+                },
+              },
+            }
+          : {}, // Пустое условие, если массив genres пустой
+      tags:
+        tags && tags.length
+          ? {
+              some: {
+                name: {
+                  in: tags,
+                },
+              },
+            }
+          : {}, // Пустое условие, если массив genres пустой
     },
     take: 10,
   });
@@ -33,17 +60,24 @@ const getBooksByFilter = async (
 };
 
 export default async function Page({
-  params: { genre, fandom, tag },
+  searchParams: { statusTranslate, age, fandoms = [], genres = [], tags = [] },
 }: {
-  params: {
-    genre: string[];
-    fandom: string[];
-    tag: string[];
+  searchParams: {
+    statusTranslate: string;
+    age: string;
+    fandoms: [];
+    genres: [];
+    tags: [];
   };
 }) {
-  const { genres, fandoms, tags } = await getFilterData();
-  console.log(genre, fandom, tag);
-  const books = await getBooksByFilter(genre, fandom, tag);
+  const { genre, fandom, tag } = await getFilterData();
+  console.log(fandoms, genres);
+  console.log(genres, [genres]);
+  const books = await getBooksByFilter({
+    genres: Array.isArray(genres) ? genres : [genres],
+    fandoms: Array.isArray(fandoms) ? fandoms : [fandoms],
+    tags: Array.isArray(tags) ? tags : [tags],
+  });
   return (
     <div className="flex flex-row text-black max-w-7xl mx-auto">
       <div className="flex-1">
@@ -52,7 +86,7 @@ export default async function Page({
         {books && books.map((book) => <div key={book.id}>{book.name}</div>)}
       </div>
       <Suspense fallback={<div>Loading...</div>}>
-        <Filter genres={genres} fandoms={fandoms} tags={tags} />
+        <Filter genres={genre} fandoms={fandom} tags={tag} />
       </Suspense>
     </div>
   );

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
+import { MultipleSelect } from "../ui/MultipleSelect";
 
 const statusArray = [
   {
@@ -49,6 +50,9 @@ export const Filter = ({
   fandoms: Fandom[];
   tags: Tag[];
 }) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [query, setQuery] = useState({
     // tags: [],
     // genres: [],
@@ -71,9 +75,14 @@ export const Filter = ({
       [name]: value,
     }));
   };
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+
+  const onMultipleChange = (name: string, values: any) => {
+    setQuery((prevState) => ({
+      ...prevState,
+      [name]: [...values],
+    }));
+  };
+  console.log(query);
 
   // Get a new searchParams string by merging the current
   // searchParams with a provided key/value pair
@@ -88,23 +97,9 @@ export const Filter = ({
   );
 
   const onSubmit = () => {
+    console.log(query);
     router.push(pathname + "?" + createQueryString("sort", "asc"));
   };
-
-  // const href = () => {
-  //   let url = "";
-  //   for (const [key, value] of Object.entries(query)) {
-  //     if (Array.isArray(value)) {
-  //       value.map((val) => {
-  //         createQueryString(key, val);
-  //       });
-  //     } else {
-  //       url += createQueryString(key, value);
-  //     }
-  //   }
-
-  //   return `${pathname}?${url}`;
-  // };
 
   return (
     <form className="bg-white w-[307px] rounded-md p-4 list-none">
@@ -118,9 +113,11 @@ export const Filter = ({
       </div>
       <div>
         <p className="py-2">Жанры</p>
-        <input
-          className="duration-300 transition-all outline-slate-300 border-2 px-2 py-1 rounded-md w-full"
-          placeholder="SearchPanel"
+        <MultipleSelect
+          queryKey={"genres"}
+          options={genres}
+          valueKey={"name"}
+          onMultipleChange={onMultipleChange}
         />
       </div>
       <div>
@@ -132,9 +129,11 @@ export const Filter = ({
       </div>
       <div>
         <p className="py-2">Фандомы</p>
-        <input
-          className="duration-300 transition-all outline-slate-300 border-2 px-2 py-1 rounded-md w-full"
-          placeholder="SearchPanel"
+        <MultipleSelect
+          queryKey={"fandoms"}
+          options={fandoms}
+          valueKey={"name"}
+          onMultipleChange={onMultipleChange}
         />
       </div>
       <div>
