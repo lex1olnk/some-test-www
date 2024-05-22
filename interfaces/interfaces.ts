@@ -49,19 +49,19 @@ export interface Image {
 export interface Fandom {
   id: number;
   name: string;
-  books: Book[];
+  books?: Book[];
 }
 
 export interface Tag {
   id: number;
   name: string;
-  books: Book[];
+  books?: Book[];
 }
 
 export interface Genre {
   id: number;
   name: string;
-  books: Book[];
+  books?: Book[];
 }
 
 export interface User {

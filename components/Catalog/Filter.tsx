@@ -60,12 +60,12 @@ export const Filter = ({
     // type: "",
     statusTranslate: "",
     age: "all",
-    // yearBefore: "",
-    // yearAfter: "",
-    // chaptersBefore: "",
-    // chaptersAfter: "",
-    // ratingBefore: "",
-    // ratingAfter: "",
+    yearBefore: "",
+    yearAfter: "",
+    chaptersBefore: "",
+    chaptersAfter: "",
+    ratingBefore: "",
+    ratingAfter: "",
   });
 
   const onOptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,30 +102,29 @@ export const Filter = ({
   };
 
   return (
-    <form className="bg-white w-[307px] rounded-md p-4 list-none">
+    <form className="bg-white w-[307px] rounded-md p-4 list-none h-full">
       <span className="text-xl">Фильтры</span>
       <div className="mt-2">
         <p className="py-2">Типы</p>
-        <input
-          className="duration-300 transition-all outline-slate-300 border-2 px-2 py-1 rounded-md w-full"
-          placeholder="SearchPanel"
-        />
-      </div>
-      <div>
-        <p className="py-2">Жанры</p>
-        <MultipleSelect
-          queryKey={"genres"}
-          options={genres}
-          valueKey={"name"}
-          onMultipleChange={onMultipleChange}
-        />
-      </div>
-      <div>
-        <p className="py-2">Теги</p>
-        <input
-          className="duration-300 transition-all outline-slate-300 border-2 px-2 py-1 rounded-md w-full"
-          placeholder="SearchPanel"
-        />
+        <div>tyes</div>
+        <div>
+          <p className="py-2">Жанры</p>
+          <MultipleSelect
+            queryKey={"genres"}
+            options={genres}
+            valueKey={"name"}
+            onMultipleChange={onMultipleChange}
+          />
+        </div>
+        <div>
+          <p className="py-2">Теги</p>
+          <MultipleSelect
+            queryKey={"tags"}
+            options={tags}
+            valueKey={"name"}
+            onMultipleChange={onMultipleChange}
+          />
+        </div>
       </div>
       <div>
         <p className="py-2">Фандомы</p>
@@ -179,11 +178,21 @@ export const Filter = ({
         <div className="flex flex-row justify-between">
           <div className="flex flex-col w-5/12">
             От
-            <input className="outline-slate-300 border-2 px-2 py-1 rounded-md " />
+            <input
+              onChange={onOptionChange}
+              value={query.yearBefore}
+              name={"yearBefore"}
+              className="outline-slate-300 border-2 px-2 py-1 rounded-md "
+            />
           </div>
           <div className="flex flex-col w-5/12">
             До
-            <input className="outline-slate-300 border-2 px-2 py-1 rounded-md" />
+            <input
+              onChange={onOptionChange}
+              value={query.yearAfter}
+              name={"yearAfter"}
+              className="outline-slate-300 border-2 px-2 py-1 rounded-md"
+            />
           </div>
         </div>
       </div>
@@ -192,7 +201,12 @@ export const Filter = ({
         <div className="flex flex-row justify-between">
           <div className="flex flex-col w-5/12">
             От
-            <input className="outline-slate-300 border-2 px-2 py-1 rounded-md " />
+            <input
+              onChange={onOptionChange}
+              value={query.chaptersBefore}
+              name={"chaptersBefore"}
+              className="outline-slate-300 border-2 px-2 py-1 rounded-md "
+            />
           </div>
           <div className="flex flex-col w-5/12">
             До
@@ -205,11 +219,21 @@ export const Filter = ({
         <div className="flex flex-row justify-between">
           <div className="flex flex-col w-5/12">
             От
-            <input className="outline-slate-300 border-2 px-2 py-1 rounded-md " />
+            <input
+              onChange={onOptionChange}
+              value={query.ratingAfter}
+              name={"ratingAfter"}
+              className="outline-slate-300 border-2 px-2 py-1 rounded-md "
+            />
           </div>
           <div className="flex flex-col w-5/12">
             До
-            <input className="outline-slate-300 border-2 px-2 py-1 rounded-md" />
+            <input
+              onChange={onOptionChange}
+              value={query.ratingBefore}
+              name={"ratingBefore"}
+              className="outline-slate-300 border-2 px-2 py-1 rounded-md"
+            />
           </div>
         </div>
       </div>

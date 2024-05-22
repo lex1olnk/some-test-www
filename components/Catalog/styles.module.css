@@ -1,0 +1,7 @@
+.bookDescription {
+  @apply flex flex-row;
+}
+
+.bookDescription > * {
+  @apply mx-4 first:ml-0 my-1;
+}
