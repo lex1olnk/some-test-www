@@ -1,26 +1,74 @@
-const { PrismaClient } = require('@prisma/client');
-const faker = require('faker');
-const { addDays } = require('date-fns');
+const { PrismaClient } = require("@prisma/client");
+const faker = require("faker");
+const { addDays } = require("date-fns");
+const { connect } = require("http2");
 
 const prisma = new PrismaClient();
 
+const createFakeChapter = async (bookId) => {
+  const users = await prisma.user.findMany();
+  const userIds = users.map((user) => user.id);
+
+  const fakeChapter = {
+    accessStatus: faker.random.arrayElement(["public", "private", "premium"]),
+    chapterNumber: faker.datatype.number(),
+    name: faker.lorem.words(3),
+    description: faker.lorem.paragraph(),
+    createdAt: faker.date.recent(),
+    updatedAt: faker.date.recent(),
+    createdBy: userIds[0],
+    updatedBy: userIds[0],
+    chapterStatus: faker.random.arrayElement(["progress", "complete"]),
+    costChapter: 0,
+    costAudio: 0,
+    content: faker.lorem.paragraphs(3),
+    views: faker.datatype.number(),
+    likes: faker.datatype.number(),
+    downloaded: faker.datatype.number(),
+    Book: {
+      connect: { id: bookId },
+    },
+    Discussion: {
+      create: {
+        createdAt: faker.date.recent(),
+        updatedAt: faker.date.recent(),
+      },
+    },
+  };
+
+  await prisma.chapter.create({ data: fakeChapter });
+};
+
+const createFakeTeam = async (userId) => {
+  await prisma.team.create({
+    data: {
+      name: faker.company.companyName(),
+      img: faker.image.imageUrl(),
+      likes: faker.datatype.number({ min: 0, max: 1000 }),
+      description: "This is a description for Team Alpha.",
+      admin: {
+        connect: {
+          id: userId,
+        },
+      },
+      discussion: {
+        create: {
+          createdAt: faker.date.recent(),
+          updatedAt: faker.date.recent(),
+        },
+      },
+    },
+  });
+};
+
 async function main() {
   // Создание случайных пользователей
-  for (let i = 0; i < 15; i++) {
-    await prisma.user.create({
-      data: {
-        name: faker.name.findName(),
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-      },
-    });
-  }
 
   const users = await prisma.user.findMany();
-  const userIds = users.map(user => user.id);
+  const userIds = users.map((user) => user.id);
 
   // Создание случайных авторов
-  for (let i = 0; i < 15; i++) {
+  /*   for (let i = 0; i < 15; i++) {
     await prisma.author.create({
       data: {
         value: faker.name.findName(),
@@ -29,57 +77,95 @@ async function main() {
   }
 
   const authors = await prisma.author.findMany();
-  const authorIds = authors.map(author => author.id);
+  const authorIds = authors.map((author) => author.id);
 
   // Создание случайных книг
   for (let i = 0; i < 15; i++) {
+    const rand = faker.random.arrayElement(userIds);
     await prisma.book.create({
       data: {
         adult: faker.datatype.boolean(),
         costChapter: faker.datatype.number({ min: 1, max: 10 }),
         name: faker.lorem.words(3),
-        authorId: faker.random.arrayElement(authorIds),
-        createdById: faker.random.arrayElement(userIds),
-        updatedById: faker.random.arrayElement(userIds),
+        author: {
+          connect: {
+            id: faker.random.arrayElement(authorIds),
+          },
+        },
+        createdBy: {
+          connect: { id: rand },
+        },
+        updatedBy: {
+          connect: { id: rand },
+        },
         description: faker.lorem.sentences(3),
-        statusTranslate: faker.random.arrayElement(['ONGOING', 'FREEZED']),
+        statusTranslate: faker.random.arrayElement(["ONGOING", "FREEZED"]),
         originalName: faker.lorem.words(3),
-        translatorId: faker.random.arrayElement(userIds),
+        translator: {
+          connect: { id: rand },
+        },
         likes: faker.datatype.number({ min: 0, max: 1000 }),
-        type: faker.random.arrayElement(['Japanese', 'Authors', 'Chinese', 'Korean']),
+        type: faker.random.arrayElement([
+          "Japanese",
+          "Authors",
+          "Chinese",
+          "Korean",
+        ]),
         views: faker.datatype.number({ min: 0, max: 10000 }),
-        year: faker.datatype.number({ min: 1900, max: 2023 }),
+        year: faker.datatype.number({ min: 2015, max: 2023 }),
+        discussion: {
+          create: {
+            createdAt: faker.date.recent(),
+            updatedAt: faker.date.recent(),
+          },
+        },
       },
     });
   }
 
-  const books = await prisma.book.findMany();
-  const bookIds = books.map(book => book.id);
+
 
   // Создание случайных подписок
   for (let i = 0; i < 15; i++) {
     await prisma.subscription.create({
       data: {
-        type: faker.random.arrayElement(['Basic', 'Premium', 'VIP']),
+        type: faker.random.arrayElement(["Basic", "Premium", "VIP"]),
         cost: faker.datatype.float({ min: 1, max: 100 }),
         bookId: faker.random.arrayElement(bookIds),
       },
     });
   }
 
+  for (const book of books) {
+    await createFakeChapter(book.id);
+  } */
+  const books = await prisma.book.findMany();
+  const bookIds = books.map((book) => book.id);
+
   const subscriptions = await prisma.subscription.findMany();
-  const subscriptionIds = subscriptions.map(subscription => subscription.id);
+  const subscriptionIds = subscriptions.map((subscription) => subscription.id);
 
   // Создание случайных покупок подписок
   for (let i = 0; i < 15; i++) {
     const duration = faker.datatype.number({ min: 30, max: 365 }); // продолжительность в днях
-    const createdAt = faker.date.past();
-    const endDate = addDays(startDate, faker.datatype.number({ min: 1, max: 30 }));
+    const startDate = faker.date.recent();
+    const endDate = addDays(
+      startDate,
+      faker.datatype.number({ min: 1, max: 30 })
+    );
     await prisma.subscriptionPurchase.create({
       data: {
-        subscriptionId: faker.random.arrayElement(subscriptionIds),
-        userId: faker.random.arrayElement(userIds),
-        createdAt: createdAt,
+        subscription: {
+          connect: {
+            id: faker.random.arrayElement(subscriptionIds),
+          },
+        },
+        user: {
+          connect: {
+            id: faker.random.arrayElement(userIds),
+          },
+        },
+        createdAt: startDate,
         duration: duration,
         endDate: endDate,
         isActive: faker.datatype.boolean(),
@@ -90,11 +176,14 @@ async function main() {
   // Создание случайных рекламных покупок
   for (let i = 0; i < 15; i++) {
     const startDate = faker.date.past();
-    const endDate = addDays(startDate, faker.datatype.number({ min: 1, max: 30 })); // продолжительность от 1 до 30 дней
+    const endDate = addDays(
+      startDate,
+      faker.datatype.number({ min: 1, max: 30 })
+    ); // продолжительность от 1 до 30 дней
     await prisma.adPurchase.create({
       data: {
-        bookId: faker.random.arrayElement(bookIds),
-        userId: faker.random.arrayElement(userIds),
+        book: { connect: { id: faker.random.arrayElement(bookIds) } },
+        user: { connect: { id: faker.random.arrayElement(userIds) } },
         startDate: startDate,
         endDate: endDate,
       },
@@ -103,7 +192,7 @@ async function main() {
 }
 
 main()
-  .catch(e => {
+  .catch((e) => {
     console.error(e);
     process.exit(1);
   })

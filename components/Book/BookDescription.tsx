@@ -20,7 +20,7 @@ const ShowItems = ({
   );
 };
 
-export const Description = ({ book }: any) => {
+export const BookDescription = ({ book }: any) => {
   return (
     <>
       <p>Описание</p>

@@ -1,0 +1,7 @@
+.images {
+  @apply flex flex-row;
+}
+
+.images > div {
+  @apply w-[112px] h-[162px] bg-slate-400 mx-1;
+}

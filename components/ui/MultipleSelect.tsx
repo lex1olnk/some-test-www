@@ -48,16 +48,6 @@ export const MultipleSelect = ({
           </label>
         ))}
       </div>
-      <button type="submit">Submit</button>
-      <style jsx>{`
-        .multi-select {
-          display: flex;
-          flex-direction: column;
-        }
-        .multi-select label {
-          margin: 5px 0;
-        }
-      `}</style>
     </div>
   );
 };

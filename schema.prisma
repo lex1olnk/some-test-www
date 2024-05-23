@@ -23,22 +23,24 @@ model Book {
   name            String
   images          Image[]        @relation("book_image")
   authorId        Int
-  author          Author?        @relation(fields: [authorId], references: [id])
+  author          Author         @relation(fields: [authorId], references: [id])
   createdById     Int
-  createdBy       User?          @relation(fields: [createdById], references: [id], name: "book_creator")
+  createdBy       User           @relation(fields: [createdById], references: [id], name: "book_creator")
   updatedById     Int
-  updatedBy       User?          @relation(fields: [updatedById], references: [id], name: "book_updater")
+  updatedBy       User           @relation(fields: [updatedById], references: [id], name: "book_updater")
   createdAt       DateTime       @default(now()) @map(name: "created_at")
   updatedAt       DateTime       @updatedAt @map(name: "updated_at")
   description     String
   statusTranslate Original       @default(ONGOING)
   originalName    String
-  translatorId    Int
+  translatorId    Int?
   translator      User?          @relation(fields: [translatorId], references: [id], name: "book_translator")
   likes           Int
   type            Type           @default(Japanese)
   views           Int
   year            Int
+  discussionId    Int
+  discussion      Discussion     @relation(fields: [discussionId], references: [id])
   fandoms         Fandom[]
   tags            Tag[]
   genres          Genre[]
@@ -85,6 +87,8 @@ model User {
   booksTranslator      Book[]                 @relation("book_translator")
   role                 Role                   @default(USER)
   teamAdmin            Team[]                 @relation("team_admin")
+  teamTranslatorId     Int?
+  teamTranslator       Team?                  @relation(fields: [teamTranslatorId], references: [id])
   complaints           Complaint[]
   bans                 BanList[]
   SubscriptionPurchase SubscriptionPurchase[]
@@ -145,6 +149,8 @@ model Discussion {
 
   Chapters Chapter[]
   Comment  Comment[]
+  Team     Team[]
+  Book     Book[]
 }
 
 model Rating {
@@ -159,12 +165,16 @@ model Rating {
 }
 
 model Team {
-  id      Int    @id @default(autoincrement())
-  name    String
-  img     String
-  likes   Int
-  adminId Int
-  admin   User?  @relation(fields: [adminId], references: [id], name: "team_admin")
+  id           Int        @id @default(autoincrement())
+  name         String
+  img          String
+  likes        Int
+  description  String
+  discussionId Int
+  discussion   Discussion @relation(fields: [discussionId], references: [id])
+  adminId      Int
+  admin        User       @relation(fields: [adminId], references: [id], name: "team_admin")
+  User         User[]
 }
 
 model Subscription {

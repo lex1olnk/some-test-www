@@ -68,28 +68,28 @@ const getBooksByFilter = async (props: filterProps) => {
       description: true,
     },
     where: {
-      statusTranslate: "ONGOING",
-      adult: age !== "all",
-      year: {
-        gte: Number(yearBefore),
-        lte: Number(yearAfter),
-      },
-      Chapter: {
-        some: {
-          id: {
-            gte: Number(chaptersBefore),
-            lte: Number(chaptersAfter),
-          },
-        },
-      },
-      Rating: {
-        some: {
-          rating: {
-            gte: Number(ratingBefore),
-            lte: Number(ratingAfter),
-          },
-        },
-      },
+      // statusTranslate: "ONGOING",
+      // adult: age !== "all",
+      // year: {
+      //   gte: Number(yearBefore),
+      //   lte: Number(yearAfter),
+      // },
+      // Chapter: {
+      //   some: {
+      //     id: {
+      //       gte: Number(chaptersBefore),
+      //       lte: Number(chaptersAfter),
+      //     },
+      //   },
+      // },
+      // Rating: {
+      //   some: {
+      //     rating: {
+      //       gte: Number(ratingBefore),
+      //       lte: Number(ratingAfter),
+      //     },
+      //   },
+      // },
       genres:
         genres && genres.length
           ? {

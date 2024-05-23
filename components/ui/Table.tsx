@@ -1,4 +1,5 @@
 import { Chapter } from "@prisma/client";
+import Link from "next/link";
 
 interface Item {
   [key: string | number]: any;
@@ -8,10 +9,12 @@ export const Table = ({
   rows,
   items,
   keys,
+  href,
 }: {
   rows: string[];
   items: Item[];
   keys: string[];
+  href: string;
 }) => {
   return (
     <div className="relative overflow-x-auto">
@@ -31,9 +34,13 @@ export const Table = ({
               key={item.name}
               className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
             >
-              {keys.map((row) => (
+              {keys.map((row, index: number) => (
                 <td key={item[row]} className="px-6 py-4">
-                  {item[row]}
+                  {index === 0 ? (
+                    <Link href={href + item.id}>{item[row]}</Link>
+                  ) : (
+                    item[row]
+                  )}
                 </td>
               ))}
             </tr>

@@ -4,7 +4,7 @@ import { BookHead } from "@/components/Book/BookHead";
 import { notFound } from "next/navigation";
 import { Navigation } from "@/components/ui/Navigation";
 import { Chapters } from "@/components/Book/Chapters";
-import { Description } from "@/components/Book/Description";
+import { BookDescription } from "@/components/Book/BookDescription";
 
 const getBookInformation = async (bookId: string) => {
   const headInfo = await db.book.findUnique({
@@ -12,6 +12,7 @@ const getBookInformation = async (bookId: string) => {
       id: Number(bookId),
     },
     select: {
+      id: true,
       name: true,
       originalName: true,
       type: true,
@@ -55,6 +56,7 @@ const getBookInformation = async (bookId: string) => {
     select: {
       Chapter: {
         select: {
+          id: true,
           name: true,
           chapterStatus: true,
           updatedAt: true,
@@ -73,10 +75,6 @@ const getBookInformation = async (bookId: string) => {
   };
 };
 
-const BookDescription = () => {
-  return <div></div>;
-};
-
 export default async function Page({
   params,
 }: {
@@ -84,7 +82,7 @@ export default async function Page({
     bookId: string;
   };
 }) {
-  const { headInfo, description, loaded, chapters } = await getBookInformation(
+  const { headInfo, description, chapters } = await getBookInformation(
     params.bookId
   );
   if (!headInfo || !description || !chapters) {
@@ -102,10 +100,15 @@ export default async function Page({
         className="mt-[250px]"
         navs={[
           {
-            content: <Description book={description} key={1} />,
+            content: <BookDescription book={description} key={1} />,
             value: "Описание",
           },
-          { content: <Chapters key={2} chapters={chapters} />, value: "Главы" },
+          {
+            content: (
+              <Chapters key={2} chapters={chapters} bookId={headInfo.id} />
+            ),
+            value: "Главы",
+          },
         ]}
       >
         asdasd
