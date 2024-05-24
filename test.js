@@ -104,9 +104,69 @@ const createFakeTags = async () => {
   }
 };
 
+const fakeComments = async (id) => {
+  const users = await prisma.user.findMany();
+  const userIds = users.map((user) => user.id);
+
+  const comments = Array.from({
+    length: Math.floor(Math.random() * 10) + 1,
+  }).map(() => ({
+    // Генерируем случайные данные с использованием faker
+    text: faker.lorem.sentence(),
+    userId: faker.random.arrayElement(userIds),
+    parentId: null,
+    // Связываем комментарии с созданным обсуждением
+    discussionId: id,
+  }));
+
+  // Создаем записи для Comments с использованием сгенерированных данных
+  await prisma.comment.createMany({
+    data: comments,
+  });
+};
+
+const fakeCommentsWithParents = async (id) => {
+  const users = await prisma.user.findMany();
+  const userIds = users.map((user) => user.id);
+
+  const oldComments = await prisma.comment.findMany({
+    where: {
+      discussionId: id,
+    },
+  });
+  const oldCommentsIds = oldComments.map((user) => user.id);
+
+  const comments = Array.from({
+    length: Math.floor(Math.random() * 10) + 1,
+  }).map(() => ({
+    // Генерируем случайные данные с использованием faker
+    text: faker.lorem.sentence(),
+    userId: faker.random.arrayElement(userIds),
+    parentId: faker.random.arrayElement(oldCommentsIds),
+    // Связываем комментарии с созданным обсуждением
+    discussionId: id,
+  }));
+
+  // Создаем записи для Comments с использованием сгенерированных данных
+  await prisma.comment.createMany({
+    data: comments,
+  });
+};
+
 const main = async () => {
+  const chapter = await prisma.chapter.findUnique({
+    select: {
+      discussionId: true,
+    },
+    where: {
+      id: 32,
+    },
+  });
+  console.log(chapter);
   //await addDiscussionToExistingBooks(); // Создадим 10 фейковых глав и обсуждений
-  await createFakeTags();
+  await fakeComments(chapter.discussionId);
+
+  await fakeCommentsWithParents(chapter.discussionId);
 
   console.log("creating done");
 };

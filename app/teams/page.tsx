@@ -5,7 +5,7 @@ import db from "@/lib/prisma";
 const getTeams = async () => {
   const teams = await db.team.findMany({
     include: {
-      User: {
+      users: {
         select: {
           _count: {
             select: {

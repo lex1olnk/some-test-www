@@ -91,10 +91,10 @@ model User {
   teamTranslator       Team?                  @relation(fields: [teamTranslatorId], references: [id])
   complaints           Complaint[]
   bans                 BanList[]
-  SubscriptionPurchase SubscriptionPurchase[]
-  AdPurchase           AdPurchase[]
-  Rating               Rating[]
-  Comment              Comment[]
+  subscriptionPurchase SubscriptionPurchase[]
+  adPurchase           AdPurchase[]
+  ratings              Rating[]
+  comments             Comment[]
 }
 
 model Volume {
@@ -124,8 +124,8 @@ model Chapter {
   views         Int        @default(0)
   likes         Int        @default(0)
   downloaded    Int        @default(0)
-  Book          Book       @relation(fields: [bookId], references: [id])
-  Discussion    Discussion @relation(fields: [discussionId], references: [id])
+  book          Book       @relation(fields: [bookId], references: [id])
+  discussion    Discussion @relation(fields: [discussionId], references: [id])
 }
 
 model Comment {
@@ -139,7 +139,9 @@ model Comment {
   spoiler      Boolean    @default(false)
   discussionId Int
   discussion   Discussion @relation(fields: [discussionId], references: [id])
-  User         User       @relation(fields: [userId], references: [id])
+  user         User       @relation(fields: [userId], references: [id])
+  parent       Comment?   @relation("CommentToParent", fields: [parentId], references: [id])
+  childrens    Comment[]  @relation("CommentToParent")
 }
 
 model Discussion {
@@ -147,10 +149,10 @@ model Discussion {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  Chapters Chapter[]
-  Comment  Comment[]
-  Team     Team[]
-  Book     Book[]
+  chapters Chapter[]
+  comments Comment[]
+  teams    Team[]
+  books    Book[]
 }
 
 model Rating {
@@ -174,7 +176,7 @@ model Team {
   discussion   Discussion @relation(fields: [discussionId], references: [id])
   adminId      Int
   admin        User       @relation(fields: [adminId], references: [id], name: "team_admin")
-  User         User[]
+  users        User[]
 }
 
 model Subscription {

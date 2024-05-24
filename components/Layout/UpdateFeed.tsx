@@ -8,7 +8,7 @@ const getUpdateFeedBooks = async () => {
       id: true,
       name: true,
       createdAt: true,
-      Book: {
+      book: {
         select: {
           id: true,
           name: true,
@@ -46,20 +46,20 @@ export const UpdateFeed = async () => {
 
       {chapters.map((chapter) => (
         <div
-          key={chapter.id + chapter.Book.name}
+          key={chapter.id + chapter.book.name}
           className="h-[152px] flex flex-row my-2 first:mt-0"
         >
           <div className="h-full bg-slate-400 w-[105px]">img</div>
           <div className="h-full w-full bg-white flex flex-col">
-            <Link href={`/book/${chapter.Book.id}`}>{chapter.Book.name}</Link>
-            <div>{chapter.Book.originalName}</div>
+            <Link href={`/book/${chapter.book.id}`}>{chapter.book.name}</Link>
+            <div>{chapter.book.originalName}</div>
             <div className="flex flex-row">
-              {chapter.Book.genres.map((genre) => (
-                <div key={chapter.Book.name + genre.name}>{genre.name}</div>
+              {chapter.book.genres.map((genre) => (
+                <div key={chapter.book.name + genre.name}>{genre.name}</div>
               ))}
             </div>
             <div className="">{chapter.name}</div>
-            <div>{chapter.Book.type}</div>
+            <div>{chapter.book.type}</div>
           </div>
         </div>
       ))}

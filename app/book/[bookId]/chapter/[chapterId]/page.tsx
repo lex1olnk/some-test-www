@@ -1,3 +1,4 @@
+import Discussion from "@/components/Discussion/Discussion";
 import db from "@/lib/prisma";
 import { notFound } from "next/navigation";
 
@@ -25,6 +26,7 @@ export default async function Page({
   return (
     <div className="max-w-7xl mx-auto">
       <div>{chapter.content}</div>
+      <Discussion id={chapter.discussionId} />
     </div>
   );
 }

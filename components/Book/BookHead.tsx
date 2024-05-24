@@ -9,7 +9,7 @@ type BookProps = {
 
 export const BookHead = async ({ book }: any) => {
   const rating = book?.Rating.length
-    ? book?.Rating.reduce((accumulator: number, item: Rating) => {
+    ? book?.ratings.reduce((accumulator: number, item: Rating) => {
         return accumulator + item.rating;
       }, 0) / book?.Rating.length
     : 0;
