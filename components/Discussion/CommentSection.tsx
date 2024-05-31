@@ -1,9 +1,7 @@
 "use client";
 
-import { Comment } from "@prisma/client";
-import { useState } from "react";
-
 import { Prisma } from "@prisma/client";
+import styles from "./styles.module.css";
 
 type DiscussionWithComments = Prisma.DiscussionGetPayload<{
   include: {
@@ -13,9 +11,20 @@ type DiscussionWithComments = Prisma.DiscussionGetPayload<{
           select: {
             id: true;
             name: true;
+            role: true;
           };
         };
-        childrens: true;
+        childrens: {
+          include: {
+            user: {
+              select: {
+                id: true;
+                name: true;
+                role: true;
+              };
+            };
+          };
+        };
       };
     };
   };
@@ -33,16 +42,33 @@ type CommentWithChildrens = Prisma.CommentGetPayload<{
   };
 }>;
 
-export const Comp = ({
+export const CommentSection = ({
   discussion,
 }: {
   discussion: DiscussionWithComments;
 }) => {
+  const comments = discussion.comments.map((item) => {
+    const date = new Date(item.createdAt);
+    const currentDate = new Date();
+    const fullDayDifference = Math.floor(
+      (currentDate.getTime() - date.getTime()) / 86400000
+    );
+    return { ...item, diff: fullDayDifference };
+  });
   // Функция для рекурсивного отображения комментариев и их дочерних комментариев
   const renderComments = (comments: any) => {
     return comments.map((comment: any) => (
-      <div className="bg-white my-2 ml-4" key={comment.id}>
+      <div className="bg-white mt-2 ml-4" key={comment.id}>
+        <div>
+          {comment.user.name} [ {comment.user.role} ]
+        </div>
+        <div>{comment.diff} дней назад</div>
         <div>{comment.text}</div>
+        <div className={styles.commentButtons}>
+          <button>{comment.likes} Понравилось</button>
+          <button>{comment.dislikes} Не понравилось</button>
+          <button>Ответить</button>
+        </div>
         {/* Рекурсивно отображаем дочерние комментарии */}
         {comment.childrens && renderComments(comment.childrens)}
       </div>
@@ -60,18 +86,27 @@ export const Comp = ({
       />
       <button type="submit">Add Comment</button>
       {/* Отображаем корневые комментарии */}
-      {discussion.comments.map(
+      {comments.map(
         (comment) =>
           comment.parentId === null && (
-            <div className="bg-white my-2" key={comment.id}>
+            <div className="bg-white my-2 p-4" key={comment.id}>
+              <div>
+                {comment.user.name} [ {comment.user.role} ]
+              </div>
+              <div>{comment.diff} дней назад</div>
               <div>{comment.text}</div>
+              <div className={styles.commentButtons}>
+                <button>{comment.likes} Понравилось</button>
+                <button>{comment.dislikes} Не понравилось</button>
+                <button>Ответить</button>
+              </div>
+
               {/* Рекурсивно отображаем дочерние комментарии */}
               {comment.childrens.length > 0 &&
                 renderComments(comment.childrens)}
             </div>
           )
       )}
-      {/* Форма для добавления нового комментария */}
     </div>
   );
 };

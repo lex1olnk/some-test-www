@@ -13,7 +13,7 @@ export const TeamDescriptionCard = ({ team }: { team: Team }) => {
           <div className="bg-slate-300 h-[232px] w-[232px] rounded-full ">
             img
           </div>
-          <div className="ml-8">
+          <div className="ml-8s">
             <div>{team.name}</div>
             <div className="flex flex-row">
               <div>{team.adminId}</div>

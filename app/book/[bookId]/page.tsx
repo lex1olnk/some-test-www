@@ -39,6 +39,7 @@ const getBookInformation = async (bookId: string) => {
       genres: true,
       fandoms: true,
       tags: true,
+      discussionId: true,
       translator: {
         include: {
           booksCreatedByMe: {

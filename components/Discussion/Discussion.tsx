@@ -1,6 +1,6 @@
 import { Comment } from "@prisma/client";
 import db from "@/lib/prisma";
-import { Comp } from "./Comp";
+import { CommentSection } from "./CommentSection";
 
 const getDiscussion = async (id: number) => {
   const discussion = await db.discussion.findUnique({
@@ -14,9 +14,20 @@ const getDiscussion = async (id: number) => {
             select: {
               id: true,
               name: true,
+              role: true,
             },
           },
-          childrens: true,
+          childrens: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  role: true,
+                },
+              },
+            },
+          },
         },
       },
     },
@@ -32,7 +43,7 @@ const Discussion = async ({ id }: { id: number }) => {
   return (
     <div>
       <h2>Comments</h2>
-      <Comp discussion={discussion} />
+      <CommentSection discussion={discussion} />
     </div>
   );
 };

@@ -1,0 +1,7 @@
+.commentButtons {
+  @apply flex flex-row;
+}
+
+.commentButtons > button {
+  @apply mx-2 first:ml-0 last:mr-0;
+}

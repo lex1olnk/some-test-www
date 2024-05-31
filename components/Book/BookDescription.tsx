@@ -2,6 +2,7 @@ import { Book } from "@/interfaces/interfaces";
 import { Fandom, Genre, Tag } from "@prisma/client";
 import { Card } from "../ui/Card";
 import { Button } from "../ui/Button";
+import Discussion from "../Discussion/Discussion";
 
 const ShowItems = ({
   items,
@@ -67,6 +68,7 @@ export const BookDescription = ({ book }: any) => {
       )}
 
       <Button>Подать жалобу</Button>
+      <Discussion id={book.discussionId} />
     </>
   );
 };
