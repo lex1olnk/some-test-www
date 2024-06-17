@@ -1,13 +1,24 @@
-export const Input = (props) => {
-  const {
-    title = null,
-    input = null,
-    helper = null,
-    onChange,
-    type = "text",
-    name,
-    className,
-  } = props;
+import { DetailedHTMLProps, HTMLAttributes } from "react";
+
+interface inputProps
+  extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+  title?: string;
+  input?: string;
+  helper?: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  type?: string;
+  name: string;
+}
+
+export const Input = ({
+  title = "",
+  input = "",
+  helper = "",
+  onChange,
+  type = "text",
+  name,
+  className,
+}: inputProps) => {
   return (
     <div className={className}>
       {title}

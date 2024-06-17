@@ -1,3 +1,6 @@
+"use client";
+
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 
 const navs = [
@@ -19,6 +22,8 @@ const navs = [
 ];
 
 export const Navbar = () => {
+  const { data: session } = useSession();
+
   return (
     <nav className="flex items-center justify-between flex-wrap bg-teal-500 px-8 py-4">
       <div className="flex items-center flex-shrink-0 text-white mr-6">
@@ -60,12 +65,32 @@ export const Navbar = () => {
           ))}
         </div>
         <div>
-          <a
-            href="#"
-            className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
-          >
-            Войти
-          </a>
+          {session && session?.user?.email ? (
+            <>
+              {" "}
+              <span>{session?.user?.email}</span>{" "}
+              <button
+                onClick={() => signOut({ callbackUrl: "/", redirect: true })}
+              >
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <>
+              <a
+                href="/register"
+                className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
+              >
+                Зарегистрироваться
+              </a>
+              <a
+                href="/signIn"
+                className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
+              >
+                Войти
+              </a>
+            </>
+          )}
         </div>
       </div>
     </nav>

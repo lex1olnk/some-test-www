@@ -6,12 +6,12 @@ export const News = () => {
       author: "user1",
     },
     {
-      date: "29.05.2024",
+      date: "22.05.2024",
       text: "Технические неполадки",
       author: "user1",
     },
     {
-      date: "29.05.2024",
+      date: "21.05.2024",
       text: "Технические неполадки",
       author: "user1",
     },
