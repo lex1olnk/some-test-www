@@ -1,14 +1,13 @@
+import axios from "axios";
+
 export const register = async (
   name: string,
   email: string,
   password: string
 ) => {
-  const response = await fetch(`api/auth/register`, {
-    method: "POST",
-    body: JSON.stringify({
-      name,
-      email,
-      password,
-    }),
-  });
+  const response = await axios.post(
+    `api/auth/register`,
+    JSON.stringify({ name, email, password }),
+    { headers: { "Content-Type": "application/json" } }
+  );
 };

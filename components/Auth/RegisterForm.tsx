@@ -24,10 +24,10 @@ export const RegisterForm = () => {
     setFormValues((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const { name, email, password } = formValues;
 
-    register(name, email, password);
+    const request = await register(name, email, password);
   };
 
   return (
