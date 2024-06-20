@@ -15,9 +15,7 @@ export default async function Page() {
 
   return (
     <div className="w-full flex flex-col items-center justify-center min-h-screen py-2">
-      <div className="flex flex-col items-center mt-10 p-10 shadow-md">
-        <RegisterForm />
-      </div>
+      <RegisterForm />
     </div>
   );
 }
