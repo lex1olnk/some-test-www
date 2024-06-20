@@ -66,6 +66,7 @@ export const authConfig: NextAuthOptions = {
     VKProvider({
       clientId: process.env.VK_ID as string,
       clientSecret: process.env.VK_SECRET as string,
+      authorization: "https://oauth.vk.com/authorize?scope=&v=5.313",
     }),
     GithubProvider({
       clientId: process.env.GITHUB_ID as string,
@@ -78,13 +79,14 @@ export const authConfig: NextAuthOptions = {
       if (!account) return false;
       const { provider, providerAccountId } = account;
 
-      const existingUser = user.email
-        ? await db.user.findFirst({
-            where: {
-              email: user.email,
-            },
-          })
-        : null;
+      const existingUser =
+        user.email && provider != "vk"
+          ? await db.user.findFirst({
+              where: {
+                email: user.email,
+              },
+            })
+          : null;
       console.log(existingUser);
 
       if (existingUser) return true;
