@@ -123,6 +123,8 @@ export const authConfig: NextAuthOptions = {
       return true;
     },
     async session({ session, user }) {
+      session = { ...session, user: { name: user.name } };
+
       return session;
     },
     async jwt({ token, user }) {

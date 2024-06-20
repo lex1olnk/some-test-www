@@ -65,10 +65,10 @@ export const Navbar = () => {
           ))}
         </div>
         <div>
-          {session && session?.user?.email ? (
+          {session ? (
             <>
               {" "}
-              <span>{session?.user?.email}</span>{" "}
+              <span>{session?.user?.name}</span>{" "}
               <button
                 onClick={() => signOut({ callbackUrl: "/", redirect: true })}
               >
