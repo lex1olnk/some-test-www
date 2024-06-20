@@ -78,7 +78,7 @@ export const authConfig: NextAuthOptions = {
     async signIn({ user, account }) {
       if (!account) return false;
       const { provider, providerAccountId } = account;
-
+      console.log(user);
       const existingUser =
         user.email && provider != "vk"
           ? await db.user.findFirst({
@@ -87,7 +87,6 @@ export const authConfig: NextAuthOptions = {
               },
             })
           : null;
-      console.log(existingUser);
 
       if (existingUser) return true;
 
@@ -122,8 +121,8 @@ export const authConfig: NextAuthOptions = {
       }
       return true;
     },
-    async session({ session, user }) {
-      session = { ...session, user: { name: user.name } };
+    async session({ session, token }) {
+      session = { ...session, user: { name: token.name } };
 
       return session;
     },
