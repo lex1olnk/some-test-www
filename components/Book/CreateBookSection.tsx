@@ -6,15 +6,22 @@ import { Navigation } from "@/components/ui/Navigation";
 import { Chapters } from "@/components/Book/Chapters";
 import { BookDescription } from "@/components/Book/BookDescription";
 import { Input } from "@/components/ui/Input";
+import { Author, Fandom, Genre, Tag } from "@prisma/client";
 
 const postBook = async (bookInfo: any) => {
   return;
 };
 
 export default async function CreateBookSection({
-  authors, genres, fandoms, tags, 
+  authors,
+  genres,
+  fandoms,
+  tags,
 }: {
-  
+  authors: Author[];
+  genres: Genre[];
+  fandoms: Fandom[];
+  tags: Tag[];
 }) {
   const [formValues, setFormValues] = useState({
     name: "",
