@@ -11,6 +11,7 @@ import VKProvider from "next-auth/providers/vk";
 
 import db from "./prisma";
 import { compare } from "bcrypt";
+import { NextResponse } from "next/server";
 
 export const authConfig: NextAuthOptions = {
   session: {
@@ -59,6 +60,8 @@ export const authConfig: NextAuthOptions = {
     YandexProvider({
       clientId: process.env.YANDEX_ID as string,
       clientSecret: process.env.YANDEX_SECRET as string,
+      authorization:
+        "https://oauth.yandex.ru/authorize?scope=login:email+login:avatar",
     }),
     VKProvider({
       clientId: process.env.VK_ID as string,
@@ -70,51 +73,63 @@ export const authConfig: NextAuthOptions = {
     }),
   ],
   adapter: PrismaAdapter(db),
-  // callbacks: {
-  //   async signIn({ user, account, profile }) {
-  //     const { email } = user;
+  callbacks: {
+    async signIn({ user, account }) {
+      if (!account) return false;
+      const { provider, providerAccountId } = account;
 
-  //     // Найти пользователя по провайдеру и providerAccountId
-  //     const existingAccount = await db.account.findUnique({
-  //       where: {
-  //         provider,
-  //         providerAccountId,
-  //       },
-  //       include: {
-  //         user: true,
-  //       },
-  //     });
+      const existingUser = user.email
+        ? await db.user.findFirst({
+            where: {
+              email: user.email,
+            },
+          })
+        : null;
+      console.log(existingUser);
 
-  //     if (existingAccount) {
-  //       // Пользователь уже существует, ничего не делаем
-  //       return true;
-  //     } else {
-  //       // Создаем нового пользователя
-  //       await db.user.create({
-  //         data: {
-  //           name: user.name,
-  //           email: user.email,
-  //           account: {
-  //             provider,
-  //             providerAccountId,
-  //             access_token: account.access_token,
-  //             refresh_token: account.refresh_token,
-  //             expires_at: account.expires_at,
-  //             token_type: account.token_type,
-  //             id_token: account.id_token,
-  //             session_state: account.session_state,
-  //           },
-  //         },
-  //       });
+      if (existingUser) return true;
 
-  //       return true;
-  //     }
-  //   },
-  //   async session({ session, token, user }) {
-  //     session.user.id = user.id;
-  //     return session;
-  //   },
-  // },
+      // Найти пользователя по провайдеру и providerAccountId
+      const existingAccount = await db.account.findFirst({
+        where: {
+          provider,
+          providerAccountId,
+        },
+      });
+
+      if (!existingAccount) {
+        // Создаем нового пользователя
+        await db.user.create({
+          data: {
+            name: user.name,
+            email: user.email,
+            accounts: {
+              create: {
+                provider,
+                providerAccountId,
+                access_token: account.access_token,
+                refresh_token: account.refresh_token,
+                expires_at: account.expires_at,
+                token_type: account.token_type,
+                id_token: account.id_token,
+                session_state: account.session_state,
+              },
+            },
+          },
+        });
+      }
+      return true;
+    },
+    async session({ session, user }) {
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.userId = user.id;
+      }
+      return token;
+    },
+  },
 };
 
 export async function loginIsRequiredServer() {
