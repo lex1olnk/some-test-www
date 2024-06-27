@@ -152,21 +152,135 @@ const fakeCommentsWithParents = async (id) => {
     data: comments,
   });
 };
+const adPurchasesData = [
+  {
+    bookId: 1,
+    userId: 1,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 2,
+    userId: 2,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 3,
+    userId: 3,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 4,
+    userId: 4,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 5,
+    userId: 5,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 6,
+    userId: 6,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 7,
+    userId: 7,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 8,
+    userId: 8,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 9,
+    userId: 9,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 10,
+    userId: 10,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 11,
+    userId: 11,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 12,
+    userId: 12,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 13,
+    userId: 13,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 14,
+    userId: 14,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 15,
+    userId: 15,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 16,
+    userId: 16,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 17,
+    userId: 17,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 18,
+    userId: 18,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 19,
+    userId: 19,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+  {
+    bookId: 20,
+    userId: 20,
+    startDate: new Date("2024-06-27"),
+    endDate: new Date("2024-07-27"),
+  },
+];
 
 const main = async () => {
-  const chapter = await prisma.chapter.findUnique({
-    select: {
-      discussionId: true,
-    },
-    where: {
-      id: 32,
-    },
-  });
-  console.log(chapter);
-  //await addDiscussionToExistingBooks(); // Создадим 10 фейковых глав и обсуждений
-  await fakeComments(chapter.discussionId);
-
-  await fakeCommentsWithParents(chapter.discussionId);
+  for (const adPurchase of adPurchasesData) {
+    await prisma.adPurchase.create({
+      data: adPurchase,
+    });
+  }
 
   console.log("creating done");
 };

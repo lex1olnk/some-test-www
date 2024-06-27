@@ -1,6 +1,7 @@
 import { Title } from "../ui/Title";
 import db from "@/lib/prisma";
 import { Card } from "../ui/Card";
+import Carousel from "../ui/Carousel";
 
 const getNewBooks = async () => {
   const currentDate = new Date();
@@ -21,10 +22,8 @@ export const NewBooks = async () => {
     <div className="">
       <Title>Новинки</Title>
 
-      <div className="bg-white flex flex-row h-[197px] overflow-hidden">
-        {books.map((book) => (
-          <Card title={book.name} key={book.id + book.name} bookId={book.id} />
-        ))}
+      <div className="bg-white h-[197px] ">
+        <Carousel books={books} sliderCount={6.4} space={4} />
       </div>
     </div>
   );
